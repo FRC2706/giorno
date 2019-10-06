@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Giorno</string>
+    <string name="record_match">Record Match</string>
+    <string name="view_teams">View Teams</string>
+    <string name="view_matches">View Matches</string>
+    <string name="schedule">Schedule</string>
+    <string name="sync">Sync</string>
+    <string name="settings">Settings</string>
 </resources>
