@@ -38,11 +38,7 @@ public class SyncManager {
 		// Collect objects we have to send them
 		HashMap<String, ArrayList<byte[]>> toSend = new HashMap<>();
 		for(SyncProvider provider: providers.values()) {
-			ArrayList<byte[]> objs = new ArrayList<>();
-			for(byte[] object: provider.getSyncObjects()) {
-				objs.add(object);
-			}
-			toSend.put(provider.getProviderName(), objs);
+			toSend.put(provider.getProviderName(), new ArrayList<>(Arrays.asList(provider.getSyncObjects())));
 		}
 
 		// Parse handshake to eliminate objects they already have
@@ -53,7 +49,7 @@ public class SyncManager {
 			if(providers.containsKey(name)) {
 				for(int j = 0; j < numObjects; j++) {
 					byte[] checksum = new byte[MD5_LENGTH];
-					in.read(checksum);
+					in.readFully(checksum);
 					ArrayList<byte[]> objects = toSend.get(name);
 					for(byte[] object: objects) {
 						if(Arrays.equals(checksum, generateChecksum(object))) {
@@ -104,7 +100,7 @@ public class SyncManager {
 				int length = in.readInt();
 				if(providers.containsKey(name)) {
 					byte[] object = new byte[length];
-					in.read(object);
+					in.readFully(object);
 					boolean isDuplicate = false;
 					for(byte[] sum: checksums.get(name)) {
 						if(Arrays.equals(generateChecksum(object), sum)) {
