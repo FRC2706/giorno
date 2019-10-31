@@ -4,7 +4,7 @@ I, Giorno Giovanna, have a dream.
 
 ## What is GIORNO?
 
-Simply refer to our simple acronym:
+Refer to our simple acronym:
 
 - **G**: FRC
 - **I**: Scouting
