@@ -1,4 +1,4 @@
-package ca.team2706.giorno;
+package ca.team2706.giorno.sync;
 
 public interface SyncProvider {
 
