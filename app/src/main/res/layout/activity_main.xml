@@ -40,6 +40,7 @@
             android:id="@+id/sync"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="syncActivity"
             android:text="@string/sync" />
 
         <Button
