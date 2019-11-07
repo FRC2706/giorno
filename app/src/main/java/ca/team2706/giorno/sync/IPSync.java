@@ -117,7 +117,20 @@ public class IPSync implements SyncImplementation {
 		nsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, registrationListener);
 		nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener);
 
-		// TODO: Accept connections from ss
+		// Accept connections to server socket
+		new Thread() {
+			@Override
+			public void run() {
+				while(!ss.isClosed()) {
+					try {
+						syncWith(ss.accept());
+					}
+					catch(IOException ex) {
+						Log.w("IPSync", ex);
+					}
+				}
+			}
+		}.start();
 	}
 
 	private void syncWith(Socket socket) throws IOException {
@@ -132,6 +145,12 @@ public class IPSync implements SyncImplementation {
 	public void stopSync() {
 		nsdManager.stopServiceDiscovery(discoveryListener);
 		nsdManager.unregisterService(registrationListener);
+		try {
+			ss.close();
+		}
+		catch(IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }
