@@ -20,6 +20,9 @@ public class SyncActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sync);
 		syncManager = new SyncManager();
+		GiornoApplication app = (GiornoApplication) getApplication();
+		syncManager.registerProvider(app.competitionProvider);
+		syncManager.registerProvider(app.teamProvider);
 		sync = new IPSync();
 		sync.startSync(getApplicationContext(), syncManager, new SyncUICallback() {
 			@Override
