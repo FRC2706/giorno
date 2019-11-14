@@ -24,6 +24,7 @@ public class SyncActivity extends AppCompatActivity {
 		syncManager.registerProvider(app.competitionProvider);
 		syncManager.registerProvider(app.teamProvider);
 		syncManager.registerProvider(app.scheduleProvider);
+		syncManager.registerProvider(app.matchProvider);
 		sync = new IPSync();
 		sync.startSync(getApplicationContext(), syncManager, new SyncUICallback() {
 			@Override

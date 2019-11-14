@@ -20,20 +20,29 @@ class Competition {
 		for(int i = 0; i < numTeams; i++) {
 			teams[i] = in.readShort();
 		}
+		short numMatches = in.readShort();
+		long startTime = in.readLong();
+		long endTime = in.readLong();
 		in.close();
-		return new Competition(name, location, description, teams);
+		return new Competition(name, location, description, teams, numMatches, startTime, endTime);
 	}
 
 	public final String name;
 	public final String location;
 	public final String description;
 	public final short[] teams;
+	public final short numMatches;
+	public final long startTime;
+	public final long endTime;
 
-	public Competition(String name, String location, String description, short[] teams) {
+	public Competition(String name, String location, String description, short[] teams, short numMatches, long startTime, long endTime) {
 		this.name = name;
 		this.location = location;
 		this.description = description;
 		this.teams = teams;
+		this.numMatches = numMatches;
+		this.startTime = startTime;
+		this.endTime = endTime;
 	}
 
 	byte[] encode() {
@@ -47,6 +56,9 @@ class Competition {
 			for(short team: teams) {
 				out.writeShort(team);
 			}
+			out.writeShort(numMatches);
+			out.writeLong(startTime);
+			out.writeLong(endTime);
 			out.close();
 			return bout.toByteArray();
 		}

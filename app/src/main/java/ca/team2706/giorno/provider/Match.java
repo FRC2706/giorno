@@ -8,25 +8,28 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-class Schedule {
+class Match {
 
-	static Schedule decode(byte[] data) throws IOException {
+	static Match decode(byte[] data) throws IOException {
 		DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
-		String name = in.readUTF();
+		short number = in.readShort();
+		boolean rematch = in.readBoolean();
 		byte numTeams = in.readByte();
 		short[] teams = new short[numTeams];
 		for(int i = 0; i < numTeams; i++) {
 			teams[i] = in.readShort();
 		}
 		in.close();
-		return new Schedule(name, teams);
+		return new Match(number, rematch, teams);
 	}
 
-	public final String name;
+	public final short number;
+	public final boolean rematch;
 	public final short[] teams;
 
-	public Schedule(String name, short[] teams) {
-		this.name = name;
+	public Match(short number, boolean rematch, short[] teams) {
+		this.number = number;
+		this.rematch = rematch;
 		this.teams = teams;
 	}
 
@@ -34,7 +37,8 @@ class Schedule {
 		try {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			DataOutputStream out = new DataOutputStream(new ByteArrayOutputStream());
-			out.writeUTF(name);
+			out.writeShort(number);
+			out.writeBoolean(rematch);
 			out.writeByte(teams.length);
 			for(short team: teams) {
 				out.writeShort(team);
@@ -43,7 +47,7 @@ class Schedule {
 			return bout.toByteArray();
 		}
 		catch(IOException ex) {
-			Log.wtf("Schedule" + name, "Failed to encode schedule", ex);
+			Log.wtf("Match" + number, "Failed to encode match", ex);
 			return null;
 		}
 	}
