@@ -23,6 +23,7 @@ public class SyncActivity extends AppCompatActivity {
 		GiornoApplication app = (GiornoApplication) getApplication();
 		syncManager.registerProvider(app.competitionProvider);
 		syncManager.registerProvider(app.teamProvider);
+		syncManager.registerProvider(app.scheduleProvider);
 		sync = new IPSync();
 		sync.startSync(getApplicationContext(), syncManager, new SyncUICallback() {
 			@Override
