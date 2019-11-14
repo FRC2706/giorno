@@ -7,15 +7,4 @@
 	android:gravity="center_horizontal|center_vertical"
 	tools:context=".SyncActivity">
 
-	<TextView
-		android:id="@+id/textView"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:fontFamily="serif"
-		android:text="Bruh."
-		android:textColor="#683592"
-		android:textSize="36sp"
-		android:typeface="normal"
-		android:visibility="visible" />
-
 </LinearLayout>
