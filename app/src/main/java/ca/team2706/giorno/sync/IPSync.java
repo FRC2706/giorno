@@ -19,14 +19,15 @@ public class IPSync implements SyncImplementation {
 	private ServerSocket ss;
 	private String serviceName = SERVICE_NAME;
 	private SyncManager manager;
+	private SyncUICallback ui;
 
 	// Nsd
 	private NsdManager nsdManager;
 	private NsdManager.RegistrationListener registrationListener;
-	private NsdManager.ResolveListener resolveListener;
 	private NsdManager.DiscoveryListener discoveryListener;
 
-	public void startSync(Context context, SyncManager manager) {
+	public void startSync(Context context, SyncManager manager, SyncUICallback ui) {
+		this.ui = ui;
 		this.manager = manager;
 
 		// Open ServerSocket
@@ -42,6 +43,7 @@ public class IPSync implements SyncImplementation {
 		nsdManager = (NsdManager) context.getSystemService(Context.NSD_SERVICE);
 		if(nsdManager == null) {
 			Log.e("IPSync", "Failed to get NsdManager");
+			stopSync();
 			return;
 		}
 		registrationListener = new NsdManager.RegistrationListener() {
@@ -49,11 +51,13 @@ public class IPSync implements SyncImplementation {
 			@Override
 			public void onServiceRegistered(NsdServiceInfo serviceInfo) {
 				serviceName = serviceInfo.getServiceName();
+				// TODO: Update service name
 			}
 
 			@Override
 			public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
 				Log.e("IPSync", "Failed to register Nsd service");
+				stopSync();
 			}
 
 			@Override
@@ -63,36 +67,18 @@ public class IPSync implements SyncImplementation {
 			public void onServiceUnregistered(NsdServiceInfo serviceInfo) {}
 		};
 
-		// Create Nsd resolve listener
-		resolveListener = new NsdManager.ResolveListener() {
-			@Override
-			public void onServiceResolved(NsdServiceInfo serviceInfo) {
-				if(!serviceInfo.getServiceName().equals(serviceName)) {
-					try {
-						Socket socket = new Socket(serviceInfo.getHost(), serviceInfo.getPort());
-						syncWith(socket);
-					}
-					catch(IOException ex) {
-						Log.w("IPSync", "Failed to sync with peer", ex);
-					}
-				}
-			}
-
-			@Override
-			public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {}
-		};
-
 		// Create Nsd discovery listener
 		discoveryListener = new NsdManager.DiscoveryListener() {
 			@Override
 			public void onStartDiscoveryFailed(String serviceType, int errorCode) {
 				Log.e("IPSync", "Failed to start service discovery");
+				stopSync();
 			}
 
 			@Override
 			public void onServiceFound(NsdServiceInfo serviceInfo) {
-				if(serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
-					nsdManager.resolveService(serviceInfo, resolveListener);
+				if(!serviceInfo.getServiceType().equals(SERVICE_TYPE)) {
+					nsdManager.resolveService(serviceInfo, new ResolveListener());
 				}
 			}
 
@@ -118,38 +104,74 @@ public class IPSync implements SyncImplementation {
 		nsdManager.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, discoveryListener);
 
 		// Accept connections to server socket
-		new Thread() {
-			@Override
-			public void run() {
-				while(!ss.isClosed()) {
-					try {
-						syncWith(ss.accept());
-					}
-					catch(IOException ex) {
-						Log.w("IPSync", ex);
-					}
-				}
-			}
-		}.start();
+		ServerThread serverThread = new ServerThread();
+		serverThread.start();
+
+		ui.onStart();
+		ui.onStatus("Idle");
 	}
 
 	private void syncWith(Socket socket) throws IOException {
+		ui.onStatus("Syncing with '" + socket.getInetAddress().getHostAddress() + "'");
 		DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 		DataInputStream in = new DataInputStream(socket.getInputStream());
 		manager.writeHandshake(out);
 		manager.writeResponse(out, in);
 		manager.readResponse(in);
 		socket.close();
+		ui.onStatus("Finished syncing with '" + socket.getInetAddress().getHostAddress() + "'");
 	}
 
 	public void stopSync() {
-		nsdManager.stopServiceDiscovery(discoveryListener);
-		nsdManager.unregisterService(registrationListener);
-		try {
-			ss.close();
+		if(discoveryListener != null) {
+			nsdManager.stopServiceDiscovery(discoveryListener);
 		}
-		catch(IOException ex) {
-			ex.printStackTrace();
+		if(nsdManager != null) {
+			nsdManager.unregisterService(registrationListener);
+		}
+		if(ss != null) {
+			try {
+				ss.close();
+			}
+			catch(IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		ui.onStop();
+	}
+
+	private class ResolveListener implements NsdManager.ResolveListener {
+		@Override
+		public void onServiceResolved(NsdServiceInfo serviceInfo) {
+			if(!serviceInfo.getServiceName().equals(serviceName)) {
+				try {
+					Socket socket = new Socket(serviceInfo.getHost(), serviceInfo.getPort());
+					syncWith(socket);
+				}
+				catch(IOException ex) {
+					Log.w("IPSync", "Failed to sync with peer", ex);
+				}
+			}
+		}
+
+		@Override
+		public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {}
+	}
+
+	private class ServerThread extends Thread {
+
+		@Override
+		public void run() {
+			while(!ss.isClosed()) {
+				try {
+					syncWith(ss.accept());
+				}
+				catch(IOException ex) {
+					if(!ex.getMessage().equals("Socket closed")) {
+						Log.w("IPSync", ex);
+					}
+				}
+			}
 		}
 	}
 
