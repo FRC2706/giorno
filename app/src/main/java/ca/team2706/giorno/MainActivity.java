@@ -16,10 +16,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-
-
     public void syncActivity(View view) {
         startActivity(new Intent(this, SyncActivity.class));
     }
 
+    public void settings_onClick(View view) {
+        startActivity(new Intent(this, SettingsActivity.class));
+    }
+
 }
+
+

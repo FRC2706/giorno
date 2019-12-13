@@ -1,11 +1,25 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- Light/Normal Theme:-->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Colors Used:-->
+        <item name="colorPrimary">#683592</item>
+        <item name="colorPrimaryDark">#482566</item>
+        <item name="colorAccent">#FFFFFF</item>
+        <item name="backgroundcolor">#fcfcfc</item>
+        <item name="textcolor">#ffffff</item>
+        <item name="buttoncolor">#683592</item>
+
     </style>
 
+    <!-- Dark Theme:-->
+    <style name="DarkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Colors Used:-->
+        <item name="colorPrimary">#482566</item>
+        <item name="colorPrimaryDark">#482566</item>
+        <item name="colorAccent">#000000</item>
+        <item name="backgroundcolor">#303030</item>
+        <item name="textcolor">#ffffff</item>
+        <item name="buttoncolor">#482566</item>
+    </style>
 </resources>
