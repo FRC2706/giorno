@@ -4,50 +4,92 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:foregroundGravity="center"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom|center_horizontal"
-        android:orientation="vertical">
+        android:gravity="bottom|center"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="-105dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
-        <Button
-            android:id="@+id/record"
+        <ImageView
+            android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/record_match" />
+            android:clickable="false"
+            app:srcCompat="@drawable/frclogosmall" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="70dp" />
 
         <Button
             android:id="@+id/team_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/view_teams" />
+            android:background="@drawable/rounded_button"
+            android:text="@string/view_teams"
+            android:textColor="@color/colorAccent" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
 
         <Button
             android:id="@+id/match_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/view_matches" />
+            android:background="@drawable/rounded_button"
+            android:text="@string/view_matches"
+            android:textColor="@color/colorAccent" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
 
         <Button
             android:id="@+id/schedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/schedule" />
+            android:background="@drawable/rounded_button"
+            android:text="@string/schedule"
+            android:textColor="@color/colorAccent" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
 
         <Button
             android:id="@+id/sync"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
             android:onClick="syncActivity"
-            android:text="@string/sync" />
+            android:text="@string/sync"
+            android:textColor="@color/colorAccent" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="5dp" />
 
         <Button
             android:id="@+id/settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/settings" />
+            android:background="@drawable/rounded_button"
+            android:onClick="settings_onClick"
+            android:text="@string/settings"
+            android:textColor="@color/colorAccent" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

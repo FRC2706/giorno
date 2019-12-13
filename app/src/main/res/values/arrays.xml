@@ -1,0 +1,12 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="competition_entries">
+        <item>Nipissing/North Bay</item>
+        <item>Carleton</item>
+    </string-array>
+
+    <string-array name="competition_values">
+        <item>nipissing</item>
+        <item>carleton</item>
+    </string-array>
+</resources>

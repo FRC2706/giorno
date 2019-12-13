@@ -4,7 +4,7 @@ import android.content.Context;
 
 public interface SyncImplementation {
 
-	void startSync(Context context, SyncManager manager, SyncUICallback ui);
+	void startSync(Context context, SyncManager manager);
 	void stopSync();
 
 }
